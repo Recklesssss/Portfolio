@@ -11,7 +11,7 @@ scene.add(camera);
 camera.position.z = 5;// need carefull looking at the object
 
 //Renderer
-const renderer = new THREE.WebGLRenderer({antialias: true});// for smooth edges
+const renderer = new THREE.WebGLRenderer({antialias: false});// for smooth edges
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setClearColor(0xfffff,1)// background color of the canvas or the whole scene
 document.body.appendChild(renderer.domElement); // Append the renderer to the document body it add the renderer to the html
@@ -22,14 +22,40 @@ ambientLight.position.copy(camera.position); // Set the position of the light to
 scene.add(ambientLight); // we musn't forget to add the light to the scene and other objects that affects the scene
 
 //Direction light
-let sunLight = new THREE.DirectionalLight(0xddddd, 1.0); // color and intensity
+let sunLight = new THREE.DirectionalLight(0xdddddd, 1.0); // color and intensity
 sunLight.position.y = 15;
 scene.add(sunLight);
 
 let geometry = new THREE.BoxGeometry(1, 1, 1); // Create a box geometry
-let material = new THREE.MeshStandardMaterial({color: 0xff000}); // Create a standard material with a green color 
-let mesh = new THREE.Mesh(geometry, material); // Create a mesh with the geometry and material
+let material = new THREE.MeshBasicMaterial({color: 'blue'}); // Create a standard material with a green color 
+let cube = new THREE.Mesh(geometry, material); // Create a mesh with the geometry and material
 
-scene.add(mesh); // Add the mesh to the scene
+scene.add(cube); // Add the mesh to the scene
+
+//controls
+document.addEventListener( 'keydown',onkeydown,false);
+function onkeydown(e){
+    let keycode = e.which;
+
+    if (keycode === 39){
+        camera.translateX(-0.05);
+    }
+    else if (keycode === 37){
+        camera.translateX(0.05);
+    }
+    else if (keycode === 38){
+        camera.translateZ(-0.05);
+    }
+    else if (keycode === 40){
+        camera.translateZ(0.05);
+    }
+}
+
 //renderer
-renderer.render(scene,camera)
+let rendererloop = function (){
+    requestAnimationFrame(rendererloop);
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
+    renderer.render(scene,camera);
+}
+rendererloop();
